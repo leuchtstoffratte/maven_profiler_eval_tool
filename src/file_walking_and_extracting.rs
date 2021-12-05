@@ -14,7 +14,7 @@ pub fn get_list_of_json_files_in_directory ( directory_name : &PathBuf ) -> Vec<
                 add_json_file_names_to_list(&mut json_file_names, &file_item);
             }
         }
-        Err(e) => println!("Could not access files")
+        Err(_) => println!("Could not access files")
     }
 
     json_file_names
@@ -55,7 +55,7 @@ fn is_this_a_json_file( dir_entry : &DirEntry ) -> bool{
             .file_name()
             .into_string() {
         Ok(file_name) => file_name.contains("json"),
-        Err(e) => false
+        Err(_) => false
     }
 
 }
