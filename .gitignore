@@ -1,3 +1,4 @@
 /target
-maven_profiler_workspace.code_workspace
+/maven_profiler_workspace.code_workspace
 /real_data
+/samples/*.json

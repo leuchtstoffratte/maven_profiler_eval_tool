@@ -3,10 +3,10 @@ use std::path::PathBuf;
 
 fn main(){
 
-    let test_dir = PathBuf::from("E:\\Rattenmann\\Coding\\Rust\\maven_profiler_summation\\samples");
+    let test_dir = PathBuf::from("E:\\Rattenmann\\Coding\\Rust\\maven_profiler_summation\\real_data\\maven-profiler-reports");
+    let real_dir = file_walking_and_extracting::read_directory_from_command_line().expect("A directory needs to be specified.");
 
-
-    let files : Vec<PathBuf> = file_walking_and_extracting::get_list_of_json_files_in_directory(&test_dir);
+    let files : Vec<PathBuf> = file_walking_and_extracting::get_list_of_json_files_in_directory(&real_dir);
 
     let mut results : Vec<parsing_components::MavenProfilerReport> = Vec::new();
 
@@ -113,13 +113,14 @@ mod parsing_components {
   
 
 mod file_walking_and_extracting{
-    use std::fs;
+    use std::fs::{DirEntry, read_to_string, read_dir};
     use std::path::PathBuf;
+    use std::env;
 
     pub fn get_list_of_json_files_in_directory ( directory_name : &PathBuf ) -> Vec<PathBuf>{
         let mut json_file_names : Vec<PathBuf> = Vec::new();
 
-        let directroy = std::fs::read_dir(directory_name);
+        let directroy = read_dir(directory_name);
 
         match directroy{
             Ok(file_list) =>{
@@ -136,12 +137,25 @@ mod file_walking_and_extracting{
 
 
     pub fn extract_json_string_from_file_by_name(file_name : &PathBuf ) -> Result<String, std::io::Error> {
-        std::fs::read_to_string(file_name)
+        read_to_string(file_name)
+    }
+
+
+
+    pub fn read_directory_from_command_line() -> Option<PathBuf>{
+
+        let args : Vec<String> = env::args().collect();
+
+        if args.len() > 1 {
+            Some(PathBuf::from(&args[1]))
+        }else{
+            None
+        }
     }
 
 
     fn add_json_file_names_to_list( file_names : &mut Vec<PathBuf>, 
-                                    file: &Result<std::fs::DirEntry, std::io::Error> ){
+                                    file: &Result<DirEntry, std::io::Error> ){
         if let Ok(file_name) =  file {
             if is_this_a_json_file(file_name){
                 file_names.push(file_name.path());
@@ -149,7 +163,7 @@ mod file_walking_and_extracting{
         }   
     }
 
-    fn is_this_a_json_file( dir_entry : &std::fs::DirEntry ) -> bool{
+    fn is_this_a_json_file( dir_entry : &DirEntry ) -> bool{
 
         match dir_entry
                 .file_name()
@@ -202,6 +216,8 @@ mod output{
         unimplemented!()
     }
 }
+
+
 
 
 
