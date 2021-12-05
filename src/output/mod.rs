@@ -1,3 +1,6 @@
+mod id_management;
+pub mod exports;
+
 pub struct BuildSummary{
     number_of_builds : i32,          //this is the number of maven profiler-reports
     number_of_build_projects: i32,   //this is the number of (non unique) projects that were build
@@ -39,8 +42,3 @@ pub fn print_summary(summary : &BuildSummary){
 }
 
 
-
-#[allow(dead_code)] //for now
-pub fn export_to_excel(summary : BuildSummary){
-    unimplemented!()
-}

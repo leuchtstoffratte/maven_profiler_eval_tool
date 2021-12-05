@@ -58,6 +58,3 @@ fn sum_single_project_build_time (projekt_json : &parsing_components::ProjectBui
 
 
 
-//TODO: i64-random number as identifier
-//TODO: create file with identifier
-//TODO: if id-file not found, create new Id and write file
