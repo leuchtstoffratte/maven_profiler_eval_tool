@@ -32,11 +32,7 @@ pub struct MavenProfilerReport{
 
 
 pub fn parse_maven_profiler_report( report:  &str ) -> Result<MavenProfilerReport>{
-
     let result : MavenProfilerReport = serde_json::from_str(report)?;
-    
-    println!(" paresed {}", result.name);
-    
     Ok(result)
 }
 
@@ -44,10 +40,9 @@ pub fn parse_maven_profiler_report( report:  &str ) -> Result<MavenProfilerRepor
  * return -1 if parsing failed
  */
 pub fn parse_time_in_ms (time_str : &str) -> i64{
-
     let time_number = time_str.strip_suffix(" ms");
     if time_number.is_some(){
-    time_number.unwrap().parse().expect("")
+    time_number.unwrap().parse().expect("Failed to parse time")
     } else { -1 }
 }
 

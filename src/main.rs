@@ -29,7 +29,7 @@ fn main(){
 
             let build_time = parsing_components::parse_time_in_ms(&report.time);
             if build_time > 0 {
-                statistic.add(report.projects.len() as i32, build_time, 0);
+                statistic.add_results_from_one_maven_run(report.projects.len() as i32, build_time, 0);
             }
             results.push(report);
 
