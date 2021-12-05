@@ -22,9 +22,6 @@ fn main(){
 }
 
 
-
-
-
 fn sum_single_project_build_time (projekt_json : &parsing_components::ProjectBuildTimeList) -> i64{
     let mut sum_of_build_times : i64  = 0;
 
@@ -65,6 +62,8 @@ mod parsing_components {
       date : String,
       parameters: String,
       pub projects: Vec<ProjectBuildTimeList>
+    //   ,
+    //   pub downloads : Vec<>
     }
 
 
@@ -78,11 +77,8 @@ mod parsing_components {
         Ok(result)
     }
     
-    
-    
-
   /**
-   * return -10 if parsing failed
+   * return -1 if parsing failed
    */
   pub fn parse_time_in_ms (time_str : &str) -> i64{
     
@@ -95,4 +91,89 @@ mod parsing_components {
   
 }
   
-  
+
+mod file_walking_and_extracting{
+    use std::fs;
+
+    pub fn get_list_of_json_files_in_directory ( directory_name : &str ) -> Vec<String>{
+        let mut json_file_names : Vec<String> = Vec::new();
+
+        let directroy = std::fs::read_dir(directory_name);
+
+        match directroy{
+            Ok(file_list) =>{
+                for file_item in file_list{
+                    add_json_file_names_to_list(&mut json_file_names, &file_item);
+                }
+            }
+            Err(e) => println!("Could not access files")
+        }
+
+        json_file_names
+
+    }
+
+
+    pub fn extract_json_string_from_file_by_name(file_name : &str ) -> Result<String, std::io::Error> {
+
+        std::fs::read_to_string(file_name)
+
+    }
+
+
+    fn add_json_file_names_to_list( file_names : &mut Vec<String>, file: &Result<std::fs::DirEntry, std::io::Error> ){
+        if let Ok(file_name) =  file {
+            if is_this_a_json_file(file_name){
+                file_names.push(file_name.file_name().into_string().expect("My error handling should realy work better. Could not convert file name to String."));
+            }
+        }   
+    }
+
+    fn is_this_a_json_file( dir_entry : &std::fs::DirEntry ) -> bool{
+
+        match dir_entry.file_name().into_string() {
+            Ok(file_name) => file_name.contains("json"),
+            Err(e) => false
+        }
+
+    }
+
+}
+
+mod output{
+
+    pub struct Build_summary{
+        number_of_builds : i32,
+        total_time_spend_on_build : i64, //milliseconds 
+        total_time_spend_on_downloads : i64 //milliseconds
+    }
+
+    impl Build_summary{
+        fn add(&mut self, n_builds :i32, t_build :i64, t_download :i64){
+            self.number_of_builds += n_builds;
+            self.total_time_spend_on_build += t_build;
+            self.total_time_spend_on_downloads += t_download;
+        }
+    }
+
+
+    pub fn print_summary(summary : &Build_summary){
+        println!("--------------------------------------------------------------------");
+        println!("{} projects were build.", summary.number_of_builds);
+        println!("Total build time was {} secs", summary.total_time_spend_on_build/1000);
+        println!("Total time spent on downloads was {} secs", summary.total_time_spend_on_downloads/1000);
+
+
+    }
+
+
+    pub fn export_to_excel(summary : Build_summary){
+        unimplemented!()
+    }
+}
+
+
+
+//TODO: i64-random number as identifier
+//TODO: create file with identifier
+//TODO: if id-file not found, create new Id and write file
