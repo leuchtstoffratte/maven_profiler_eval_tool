@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use chrono::prelude::*;
 
 mod parsing_components;
 mod file_walking_and_extracting;
@@ -21,6 +22,7 @@ fn main(){
             Some(name) => name,
             None => "failed to parse path."
         };
+        println!("Now parsing:             {} ", display_path);
 
         let json_str = file_walking_and_extracting::extract_json_string_from_file_by_name(&f).expect("Failed to parse file.");
 
@@ -28,7 +30,7 @@ fn main(){
 
             let build_time = parsing_components::parse_time_in_ms(&report.time);
             if build_time > 0 {
-                statistic.add_results_from_one_maven_run(report.projects.len() as i32, build_time, 0);
+                statistic.add_results_from_one_maven_run(report.projects.len() as i32, build_time, 0, Local::now()); //FIXME
             }
             results.push(report);
 
@@ -37,7 +39,7 @@ fn main(){
 
     }
 
-    output::print_summary(&statistic);
+	output::print_summary(&statistic);
     
 
 }
@@ -57,3 +59,6 @@ fn sum_single_project_build_time (projekt_json : &parsing_components::ProjectBui
 
 
 
+//TODO: i64-random number as identifier
+//TODO: create file with identifier
+//TODO: if id-file not found, create new Id and write file
