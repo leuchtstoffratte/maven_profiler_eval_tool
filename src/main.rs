@@ -21,7 +21,6 @@ fn main(){
             Some(name) => name,
             None => "failed to parse path."
         };
-        println!("Now parsing:             {} ", display_path);
 
         let json_str = file_walking_and_extracting::extract_json_string_from_file_by_name(&f).expect("Failed to parse file.");
 
