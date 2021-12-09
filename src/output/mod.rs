@@ -37,7 +37,7 @@ pub fn print_summary(summary : &BuildSummary){
     let build_secs = summary.total_time_spend_on_build/1000;
     let build_hours = (summary.total_time_spend_on_build as f64)/3600000.;
     println!("--------------------------------------------------------------------");
-    println!("maven was called on {} occasions since {}.", summary.number_of_builds, summary.oldest_included_build);
+    println!("maven was called on {} occasions since {}.", summary.number_of_builds, summary.oldest_included_build.date());
     println!("{} projects were build.", summary.number_of_build_projects);
     println!("Total build time was {number:>width$} secs", number=build_secs, width=8);
     println!("                   = {number:>width$.2} hours", number=build_hours, width=8);
