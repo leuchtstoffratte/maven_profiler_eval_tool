@@ -48,32 +48,41 @@ pub fn parse_time_in_ms (time_str : &str) -> i64{
 }
 
 
-mod parse_dates_from_filenames{
-	use chrono::DateTime;
-	use std::fs::PathBuf;
+pub mod parse_dates_from_filenames{
+	use chrono::{NaiveDateTime,  ParseError};
+	use std::path::PathBuf;
+	use std::io::Error;
+
 
 	
-	pub fn obtain_date_of_file (filepath : &PathBuf ) -> Result<DateTime<Local>, Error>{
-		//first try meta info
-		match date_from_meta_info(filepath){
-			//if that failes -> parse filename
-			Err(_) => parse_date_from_file_name(&filepath),
-			
-			Ok()
+	pub fn obtain_date_of_file (filepath : &PathBuf ) -> Result<NaiveDateTime, ParseError>{
+			parse_date_from_file_name(&filepath)
+	}
+	
+	#[allow(dead_code)]
+	fn date_from_meta_info(filepath : &PathBuf) -> Result<chrono::DateTime<chrono::Local>, Error>{
+		match std::fs::metadata(filepath)?.modified(){
+			Ok(t) => Ok(chrono::DateTime::from(t)),
+			Err(e) => Err(e)
 		}
 	}
 	
-	
-	fn date_from_meta_info(filepath : &PathBuf) -> Result<DateTime<Local>, Error>{
-		std::fs::metadata(filepath)?.mmodified()?
-	}
-	
-	fn parse_date_from_file_name(filepath : &PathBuf) -> Result<DateTime<Local>, Error>{
-		// 	blablablablabla-YYYY-MM-DD-HH-mm-ss
-		//	profiler-report-2021-12-09-11-35-14
+	fn parse_date_from_file_name(filepath : &PathBuf) -> Result<NaiveDateTime, ParseError>{
+		// 	_______________-YYYY-MM-DD-HH-mm-ss
+		//	profiler-report-2021-12-09-11-35-14.json
 
 		let file_name_pattern = "%Y-%m-%d-%H-%M-%S";
-		
-		DateTime::parse_from_str(filepath.filename(), file_name_pattern) //todo: slicing by hand?
+
+		let date_time_of_file = match filepath.file_name()
+							.and_then(std::ffi::OsStr::to_str)
+							.and_then(|s| s.get(16..35))
+							{
+								None => "",
+								Some(s) => s
+							};
+
+		NaiveDateTime::parse_from_str(date_time_of_file, file_name_pattern)
+
 	}
+
 }
