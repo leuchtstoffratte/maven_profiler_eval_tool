@@ -6,9 +6,15 @@ mod output;
 
 fn main(){
 
-    let real_dir = file_walking_and_extracting::read_directory_from_command_line().expect("A directory needs to be specified.");
+    let real_dir = file_walking_and_extracting::read_directory_from_command_line();
+    
+    if real_dir.is_none(){
+        println!("Please specify a path as first parameter.");
+        return ;
+    }
+    
 
-    let files : Vec<PathBuf> = file_walking_and_extracting::get_list_of_json_files_in_directory(&real_dir);
+    let files : Vec<PathBuf> = file_walking_and_extracting::get_list_of_json_files_in_directory(&real_dir.unwrap());
 
     let mut results : Vec<parsing_components::MavenProfilerReport> = Vec::new();
 
@@ -16,6 +22,7 @@ fn main(){
 
 
     for f in files{
+
 
         let json_str = file_walking_and_extracting::extract_json_string_from_file_by_name(&f).expect("Failed to parse file.");
 

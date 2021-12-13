@@ -1,7 +1,7 @@
 use chrono::{NaiveDateTime, NaiveDate};
 
 fn version_number () -> String{
-    String::from("0.1")
+    String::from("0.11")
 }
 
 pub struct BuildSummary{
@@ -47,11 +47,4 @@ pub fn print_summary(summary : &BuildSummary){
     println!("Total build time was {number:>width$} secs", number=build_secs, width=8);
     println!("                   = {number:>width$.2} hours", number=build_hours, width=8);
 
-}
-
-
-
-#[allow(dead_code)] //for now
-pub fn export_to_excel(summary : BuildSummary){
-    unimplemented!()
 }

@@ -8,6 +8,12 @@ pub struct MojoBuildTime{
     pub time: String
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct DownloadTime{
+	pub download: String,
+	pub time : String
+}
+
 
 #[derive(Serialize, Deserialize)]
 pub struct ProjectBuildTimeList{
@@ -25,9 +31,9 @@ pub struct MavenProfilerReport{
     goals: String,
     date : String,
     parameters: String,
-    pub projects: Vec<ProjectBuildTimeList>
-//   ,
-//   pub downloads : Vec<>
+    pub projects: Vec<ProjectBuildTimeList>,
+  	pub downloads : Option<Vec<DownloadTime>>
+
 }
 
 
